@@ -1,0 +1,43 @@
+Questionnaire Generator
+
+
+Users of this program will authenticate themselves in the application for any system call (for simplicity), except for the user creation call. Authenticated users in the system will be able to: create questions (with a single correct answer or multiple correct answers), create quizzes based on previously added questions, and respond to quizzes created by others, but only once.
+Every question is characterized by an identifier, a text, and a list of possible answers. An answer is characterized by an identifier, a text, and its truth value (False/True).
+
+
+Example of a question with a single correct answer:
+Is the sky blue? ([1] True / [2] False)
+
+In the context of quizzes, questions are scored using the French scoring style. If the chosen answer is correct, the question is awarded 1 point. If no answer is provided, the question is scored 0. However, if an incorrect answer is chosen, that question is negatively scored with a value of -1.
+Example of a question with multiple correct answers:
+Temperature can be measured in ([1] Celsius / [2] Liters / [3] Fahrenheit / [4] Grams / [5] Kelvin)
+Each correctly selected answer adds a positive weight to the question, while any incorrectly chosen answer deducts points from the question.
+
+As learned in school, the correct answers are Celsius, Kelvin, and Fahrenheit. Out of the 5 possible answers, 3 of them are correct. Therefore, each correct answer has a weight of 1 (which represents 0.333). The 2 incorrect answers (in this case, Liters and Grams) have a weight of -1 (which represents -0.5).
+
+Let's take some examples of responses for this question:
+- If the user selects Celsius + Kelvin, the question will be scored 2 = 0.66 points.
+- If the user selects Celsius + Fahrenheit + Kelvin, the question will be scored 1 point.
+- If the user chooses Liters + Fahrenheit + Kelvin, the question will be scored 0.333 + 0.333 - 0.5 = 0.166 points (equivalent to 16% of a point).
+- If the user selects all options (Celsius + Liters + Fahrenheit + Grams + Kelvin), the question will be scored 0.333 - 0.5 + 0.333 - 0.5 + 0.333 = 0 points.
+- If the options Liters + Grams are selected, the question will be scored -0.5 - 0.5 = -1 point.
+
+To create a quiz, it is necessary to add questions beforehand. Any user can create questions and then create quizzes based on those questions.
+
+General rules of the quiz generator:
+- There cannot be two questions with the same text.
+- There cannot be two quizzes with the same name.
+- Users can use questions created by other users when creating quizzes.
+- A quiz can have between 1 and 10 questions.
+- Within a quiz, the maximum achievable score is 100 points, and each question has an equal weight, rounded to two decimal places (e.g., 10 questions - each question is worth 10% of the quiz score, or 7 questions - each question is worth 14.28%).
+- For incorrect answers to questions (overall negative score), the deduction will be proportional in the same manner (e.g., if one question in a 7-question quiz receives a score of -0.5, then the question's weight in the quiz will be -7.14%).
+- Furthermore, the resulting total percentage of the quiz will be rounded to the nearest whole number (e.g., if the obtained percentage is 28.42%, it will be rounded down to 28, and if it is, for example, 35.67%, it will be rounded up to 36).
+- If the sum of question scores in a quiz results in a negative value, the quiz will be scored as 0.
+- A question can have between 1 and 5 possible answers.
+- When creating a question with a single correct answer, multiple correct answers should not be allowed to be submitted.
+- Users should be able to view their score on each completed quiz.
+- Quizzes can only be deleted by their creators.
+- The identifiers for each object (ID properties) will be set incrementally for each instantiation, using static fields, as learned in the lab.
+- For data persistence (users, questions, quizzes, scores per completed quiz), file operations will be used. Working with files is described at the end of this document.
+
+
